@@ -86,15 +86,14 @@ func get_reward() -> float:
 	var zone = int(player.position.x / explore_size)
 	var coin = get_nearest_coin()
 
-	#const goal_x = 1025.0
-	#var goal_dist = goal_x - player.position.x
-	#reward -= (goal_dist / goal_x) * 0.01
+	const goal_x = 1025.0
+	var goal_dist = goal_x - player.position.x
+	reward -= (goal_dist / goal_x) * 0.012
 	# reward for going towards the goal
-	#reward += (1.0 - goal_dist / goal_x) * 0.02
 
 	# progress reward
 	if player.position.x > max_x_reached:
-		reward += (player.position.x - max_x_reached) * 0.05
+		reward += (player.position.x - max_x_reached) * 0.2
 		max_x_reached = player.position.x
 
 	# penalty for going back
@@ -103,7 +102,7 @@ func get_reward() -> float:
 
 	# jump penalty
 	if rl.last_action in [2, 4, 5]:
-		reward -= 0.02
+		reward -= 0.012
 	#if rl.last_action in [0,1]:
 		#reward += 0.01
 
@@ -122,12 +121,12 @@ func get_reward() -> float:
 	# exploration bonus for new zones
 	if not visited_x.has(zone):
 		visited_x[zone] = true
-		reward += 0.5
+		reward += 0.75
 
 	# jitter penalty
 	#if sign(player.velocity.x) != sign(delta_x) and abs(delta_x) > 1:
-	if abs(delta_x) < 1 and abs(player.velocity.x) > 10:
-		reward -= 0.02
+	#if abs(delta_x) < 1 and abs(player.velocity.x) > 10:
+	#	reward -= 0.03
 
 	# coin collection
 	if score > prev_score:
@@ -139,7 +138,7 @@ func get_reward() -> float:
 
 	# death and goal
 	if _in_deadzone():
-		reward -= 60.0
+		reward -= 15.0
 	if _reached_goal():
 		reward += 200.0
 
